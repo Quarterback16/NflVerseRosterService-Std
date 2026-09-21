@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>NflVerseRosterService_Std</RootNamespace>
+  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(TargetDir)NflVerseRosterService-Std.dll&quot; &quot;d:\dropbox\services\&quot; /D /Y /I" />
+  </Target>
+
+</Project>

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="NflVerseRosterService-Std/NflVerseRosterService-Std.csproj" />
+  <Project Path="NflVerseRosterService.Tests/NflVerseRosterService.Tests.csproj" />
+</Solution>
