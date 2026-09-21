@@ -9,4 +9,9 @@
     <Exec Command="xcopy &quot;$(TargetDir)NflVerseRosterService-Std.dll&quot; &quot;d:\dropbox\services\&quot; /D /Y /I" />
   </Target>
 
+  <ItemGroup>
+    <PackageReference Include="CSharpFunctionalExtensions" Version="3.7.0" />
+    <PackageReference Include="CsvHelper" Version="33.1.0" />
+  </ItemGroup>
+
 </Project>
