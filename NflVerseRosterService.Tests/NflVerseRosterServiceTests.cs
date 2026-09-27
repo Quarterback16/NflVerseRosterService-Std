@@ -1,5 +1,6 @@
 ﻿namespace NflVerseRosterService.Tests
 {
+	using CSharpFunctionalExtensions;
 	using NflVerseRosterService_Std;
 	using static System.Console;
 
@@ -52,6 +53,32 @@
 						$"{player.FullName,-20} {player.Position,-2} {player.Status}"));
 			WriteLine();
 			WriteLine( $"Total Active Players: {NflVerseRosterHelper.LatestActiveRosterFor("SF", result.Value).Count}");
+		}
+
+		[TestMethod]
+		public void CanGetTflRosterForTeam()
+		{
+			var nflRosterData = sut.LoadRosterData("d:/dropbox/CSV/roster_2026.csv");
+			Assert.IsNotEmpty(nflRosterData.Value.RosterRecords);
+			var nflRoster = NflVerseRosterHelper.LatestRosterFor("SF", nflRosterData.Value);
+			var tflRoster = sut.GetTflRoster("SF");
+			Assert.IsNotEmpty(tflRoster);
+			WriteLine($"Total TFL Players: {tflRoster.Count}");
+			foreach (var player in tflRoster)
+			{
+				var nflPlayer = nflRoster
+					.FirstOrDefault(p => p.FullName == player.FullName);
+				if (nflPlayer != null)
+				{
+					WriteLine(
+						$"{player.FullName,-20} {player.Position,-2} {nflPlayer.Status}");
+				}
+				else
+				{
+					WriteLine(
+						$"{player.FullName,-20} (Not in NFL Roster)");
+				}
+			}
 		}
 	}
 }

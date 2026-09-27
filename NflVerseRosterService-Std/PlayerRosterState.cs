@@ -29,5 +29,8 @@ namespace NflVerseRosterService_Std
 		public DateTime? BirthDate { get; set; }
 		[Name("draft_number")]
 		public int? DraftNumber { get; set; }
+
+		public override string ToString() => $"{FullName} {Status}";
+
 	}
 }

@@ -11,4 +11,13 @@
     <ProjectReference Include="..\NflVerseRosterService-Std\NflVerseRosterService-Std.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="NameFixerService-Std">
+      <HintPath>..\..\..\..\Dropbox\Services\NameFixerService-Std.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayerService-2.0">
+      <HintPath>..\..\..\..\Dropbox\Services\PlayerService-2.0.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

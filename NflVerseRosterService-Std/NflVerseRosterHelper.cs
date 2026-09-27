@@ -28,5 +28,13 @@ namespace NflVerseRosterService_Std
 				.OrderBy(p=> p.Position)
 				.ToList();
 
+		public static List<PlayerRosterState> LatestRosterFor(
+			string teamAbbr,
+			NflVerseRosterState s) =>
+
+			s.RosterRecords
+				.Where(p => p.Week == MaxWeek(s) && p.Team == teamAbbr)
+				.OrderBy(p => p.Position)
+				.ToList();
 	}
 }

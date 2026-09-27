@@ -1,16 +1,18 @@
 ﻿using CsvHelper.Configuration;
+using NameFixerService;
 
 namespace NflVerseRosterService_Std
 {
 	public class NflVerseRosterCsvInputClassMap2 : ClassMap<PlayerRosterState>
 	{
-		public NflVerseRosterCsvInputClassMap2()
+		public NflVerseRosterCsvInputClassMap2(IFixNames nameFixer)
 		{
-			ConfigureMappings(this);
+			ConfigureMappings(this, nameFixer);
 		}
 
 		private static void ConfigureMappings(
-			ClassMap<PlayerRosterState> map)
+			ClassMap<PlayerRosterState> map,
+			IFixNames nameFixer)
 		{ 
 			// map for stru 2026-09-21 
 			// Fields must match Header Names Exactly!
@@ -24,7 +26,14 @@ namespace NflVerseRosterService_Std
 				.Name("jersey_number")
 				.Optional();
 			map.Map(p => p.Status).Name("status");
-			map.Map(p => p.FullName).Name("full_name");
+			map.Map(p => p.FullName)
+				.Name("full_name")
+				.Convert(
+					args =>
+					{ 
+						var name = args.Row.GetField("full_name");
+						return nameFixer.FixName(name);
+					});
 			map.Map(p => p.FirstName).Name("first_name");
 			map.Map(p => p.LastName).Name("last_name");
 			map.Map(p => p.BirthDate)
