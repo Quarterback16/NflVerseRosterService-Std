@@ -1,6 +1,5 @@
 ﻿namespace NflVerseRosterService.Tests
 {
-	using CSharpFunctionalExtensions;
 	using NflVerseRosterService_Std;
 	using static System.Console;
 
@@ -17,7 +16,7 @@
 
 		private static NflVerseRosterService ServiceUnderTest() =>
 		
-			new();
+			new("d:/dropbox/CSV/roster_2026.csv");
 		
 
 		[TestMethod]
@@ -25,6 +24,7 @@
 		{
 			var result = sut.LoadRosterData("test.csv");
 			Assert.IsTrue(result.IsFailure);
+			WriteLine($"Error: {result.Error}");
 		}
 
 		[TestMethod]
@@ -45,22 +45,20 @@
 		[TestMethod]
 		public void CanGetCurrentRosterForTeam()
 		{
-			var result = sut.LoadRosterData("d:/dropbox/CSV/roster_2026.csv");
-			Assert.IsTrue(result.IsSuccess);
-			NflVerseRosterHelper.LatestActiveRosterFor("SF", result.Value)
+			Assert.IsNotNull(sut);
+			var roster = sut.LatestActiveRosterFor("SF");
+			roster
 				.ForEach(
 					player => WriteLine(
 						$"{player.FullName,-20} {player.Position,-2} {player.Status}"));
 			WriteLine();
-			WriteLine( $"Total Active Players: {NflVerseRosterHelper.LatestActiveRosterFor("SF", result.Value).Count}");
+			WriteLine( $"Total Active Players: {roster.Count}");
 		}
 
 		[TestMethod]
 		public void CanGetTflRosterForTeam()
 		{
-			var nflRosterData = sut.LoadRosterData("d:/dropbox/CSV/roster_2026.csv");
-			Assert.IsNotEmpty(nflRosterData.Value.RosterRecords);
-			var nflRoster = NflVerseRosterHelper.LatestRosterFor("SF", nflRosterData.Value);
+			var nflRoster = sut.LatestRosterFor("SF");
 			var tflRoster = sut.GetTflRoster("SF");
 			Assert.IsNotEmpty(tflRoster);
 			WriteLine($"Total TFL Players: {tflRoster.Count}");
@@ -80,5 +78,52 @@
 				}
 			}
 		}
+
+		[TestMethod]
+		public void CanGetDevelopmentalRosterForTeam()
+		{
+			var devRoster = sut.DevRosterFor("NO");
+
+			Assert.IsNotEmpty(devRoster);
+			WriteLine($"Total Developmental Players: {devRoster.Count}");
+			foreach (var player in devRoster)
+			{
+				WriteLine(
+					$"{player.FullName,-20} {player.Position,-2} {player.Status}");
+			}
+		}
+
+		[TestMethod]
+		public void CanGetFalselyRosteredPlayersTeam()
+		{
+			var teamInFocus = "PS";
+			var tflRoster = sut.GetTflRoster(teamInFocus);
+			Assert.IsNotEmpty(tflRoster);
+			var falslyRostered = sut.FalselyRosteredFor(
+				teamInFocus, 
+				tflRoster);
+			falslyRostered.ForEach(
+				player => WriteLine(
+					$"{player.FullName,-20} {player.Position,-2} tm: {sut.PlaysFor(player.FullName)}"));
+		}
+
+		[TestMethod]
+		public void CanDetermineTeamForPlayer()
+		{
+			var playerName = "Deebo Samuel";
+			var expectedTeamCode = "SF";
+			var teamCode = sut.PlaysFor(playerName);
+			WriteLine($"{playerName} plays for {teamCode}");
+			Assert.AreEqual(expectedTeamCode, teamCode);
+		}
+
+		[TestMethod]
+		public void KnowsDistinctTeams()
+		{
+			var teams = NflVerseRosterHelper.DistinctTeams(sut.NflVerseRosters);
+			Assert.IsNotEmpty(teams);
+			teams.ForEach(team => WriteLine($"Team: {team}"));
+		}
 	}
+
 }

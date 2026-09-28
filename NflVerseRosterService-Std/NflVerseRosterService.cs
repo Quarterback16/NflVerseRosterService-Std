@@ -14,10 +14,70 @@ namespace NflVerseRosterService_Std
 		private readonly INflPlayerService _ps;
 		private readonly IFixNames _nameFixer;
 
+		private readonly Dictionary<string,string> TeamCodes = new Dictionary<string,string>
+		{
+			{ "ARI", "AC" },
+			{ "ATL", "AF" },
+			{ "BAL", "BR" },
+			{ "BUF", "BB" },
+			{ "CAR", "CP" },
+			{ "CHI", "CH" },
+			{ "CIN", "CI" },
+			{ "CLE", "CL" },
+			{ "DAL", "DC" },
+			{ "DEN", "DB" },
+			{ "DET", "DL" },
+			{ "GB",  "GB" },
+			{ "HOU", "HT" },
+			{ "IND", "IC" },
+			{ "JAX", "JJ" },
+			{ "KC",  "KC" },
+			{ "LA",  "LR" },
+			{ "LAC", "LC" },
+			{ "LV",  "OR" },
+			{ "MIA", "MD" },
+			{ "MIN", "MV" },
+			{ "NE",  "NE" },
+			{ "NO",  "NO" },
+			{ "NYG", "NG" },
+			{ "NYJ", "NJ" },
+			{ "PHI", "PE" },
+			{ "PIT", "PS" },
+			{ "SEA", "SS" },
+			{ "SF",  "SF" },
+			{ "TB",  "TB" },
+			{ "TEN", "TT" },
+			{ "WAS", "WR" },
+		};
+
+		public NflVerseRosterState NflVerseRosters { get; set; }
+		public string CsvFilePath { get; set; }
+
 		public NflVerseRosterService()
 		{
 			_ps = new NflPlayerService();
 			_nameFixer = new NameFixer();
+			CsvFilePath = "d:/dropbox/CSV/roster_2026.csv";
+			LoadRosterData();
+		}
+
+		public NflVerseRosterService(
+			string csvFilePath)
+		{
+			_ps = new NflPlayerService();
+			_nameFixer = new NameFixer();
+			CsvFilePath = csvFilePath;
+			LoadRosterData();
+		}
+
+		private void LoadRosterData()
+		{
+			var result = LoadRosterData(CsvFilePath);
+			if (result.IsSuccess)
+			{
+				NflVerseRosters = result.Value;
+				Purify();
+			}
 		}
 
 		public Result<NflVerseRosterState> LoadRosterData(
@@ -88,5 +148,63 @@ namespace NflVerseRosterService_Std
 			}
 			return int.Parse(jerseyNo);
 		}
+
+		public string PlaysFor(
+			string playerName)
+		{
+			var player = NflVerseRosters.RosterRecords
+				.Find(p => p.Week == NflVerseRosterHelper.MaxWeek(NflVerseRosters) 
+					&& p.FullName == playerName);
+			return player?.Team ?? string.Empty;
+		}
+
+		private void Purify()
+		{
+			NflVerseRosters.RosterRecords.ForEach(p =>
+			{
+				p.FullName = _nameFixer.FixName(p.FullName);
+				p.Team = TflCodeFor(p.Team);
+			});
+		}
+
+		private string TflCodeFor(string teamCode) =>
+		
+			TeamCodes[teamCode];
+		
+
+		public List<PlayerRosterState> FalselyRosteredFor(
+			string teamAbbr,
+			List<PlayerRosterState> suggestedRoster)
+		{
+			var falselyRostered = NflVerseRosterHelper.FalselyRosteredFor(
+				teamAbbr,
+				NflVerseRosters,
+				suggestedRoster);
+			return falselyRostered;
+		}
+
+		public List<PlayerRosterState> LatestActiveRosterFor(
+			string teamAbbr) =>
+		
+			NflVerseRosterHelper.RosterFor(
+				teamAbbr,
+				"ACT",
+				NflVerseRosters);
+
+		public List<PlayerRosterState> LatestRosterFor(
+			string teamAbbr) =>
+
+			NflVerseRosterHelper.LatestRosterFor(
+				teamAbbr,
+				NflVerseRosters);
+
+		public List<PlayerRosterState> DevRosterFor(
+			string teamAbbr) =>
+
+			NflVerseRosterHelper.RosterFor(
+				teamAbbr,
+				"DEV",
+				NflVerseRosters);
+
 	}
 }
