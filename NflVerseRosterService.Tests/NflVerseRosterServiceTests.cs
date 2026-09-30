@@ -121,8 +121,7 @@
 		[TestMethod]
 		public void KnowsDistinctTeams()
 		{
-			var teams = NflVerseRosterHelper.DistinctTeams(
-				sut.NflVerseRosters);
+			var teams = sut.DistinctTeams();
 			Assert.IsNotEmpty(teams);
 			teams.ForEach(team => Console.WriteLine($"Team: {team}"));
 		}
@@ -130,8 +129,7 @@
 		[TestMethod]
 		public void KnowsDistinctPositions()
 		{
-			var positions = NflVerseRosterHelper.DistinctPositions(
-				sut.NflVerseRosters);
+			var positions = sut.DistinctPositions();
 			Assert.IsNotEmpty(positions);
 			positions.ForEach(position => Console.WriteLine($"Position: {position}"));
 		}

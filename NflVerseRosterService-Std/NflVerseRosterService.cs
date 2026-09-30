@@ -206,5 +206,12 @@ namespace NflVerseRosterService_Std
 				"DEV",
 				NflVerseRosters);
 
+		public List<string> DistinctTeams() =>
+
+			NflVerseRosterHelper.DistinctTeams(NflVerseRosters);
+
+		public List<string> DistinctPositions() =>
+
+			NflVerseRosterHelper.DistinctPositions(NflVerseRosters);
 	}
 }
