@@ -63,6 +63,8 @@ namespace NflVerseRosterService_Std
 					.FirstOrDefault(p => p.FullName == player.FullName);
 				if (nflPlayer == null)
 				{
+					player.FirstName = player.FullName.Split(' ')[0];
+					player.LastName = player.FullName.Split(' ')[1];
 					falselyRostered.Add(player);
 				}
 			}
