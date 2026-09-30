@@ -20,6 +20,15 @@ namespace NflVerseRosterService_Std
 				.OrderBy(x => x)
 				.ToList();
 
+		public static List<string> DistinctPositions(
+			NflVerseRosterState s) =>
+
+			s.RosterRecords
+				.GroupBy(p => p.Position)
+				.Select(g => g.First().Position)
+				.OrderBy(x => x)
+				.ToList();
+
 		public static List<PlayerRosterState> LatestRosterFor(
 			string teamAbbr,
 			NflVerseRosterState s) =>
@@ -61,5 +70,15 @@ namespace NflVerseRosterService_Std
 			}
 			return falselyRostered;
 		}
+
+		public static bool IsFantasyRelevant(PlayerRosterState player) =>
+
+			player.Position == "QB" ||
+			player.Position == "RB" ||
+			player.Position == "WR" ||
+			player.Position == "TE" ||
+			player.Position == "K";
+
+
 	}
 }

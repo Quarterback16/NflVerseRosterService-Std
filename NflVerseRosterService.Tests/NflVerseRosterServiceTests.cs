@@ -120,9 +120,44 @@
 		[TestMethod]
 		public void KnowsDistinctTeams()
 		{
-			var teams = NflVerseRosterHelper.DistinctTeams(sut.NflVerseRosters);
+			var teams = NflVerseRosterHelper.DistinctTeams(
+				sut.NflVerseRosters);
 			Assert.IsNotEmpty(teams);
 			teams.ForEach(team => WriteLine($"Team: {team}"));
+		}
+
+		[TestMethod]
+		public void KnowsDistinctPositions()
+		{
+			var positions = NflVerseRosterHelper.DistinctPositions(
+				sut.NflVerseRosters);
+			Assert.IsNotEmpty(positions);
+			positions.ForEach(position => WriteLine($"Position: {position}"));
+		}
+
+		[TestMethod]
+		public void KnowsPossibleNewbies()
+		{
+			//  Newbies are players who have never registered a TFL stat yet, 
+			//  they will be in the nflverse data but not in the TFL data.
+			var nflRoster = sut.LatestRosterFor("SF")
+				.Where(p => NflVerseRosterHelper.IsFantasyRelevant(p));
+			WriteLine($"Total NFL Fantasy Players: {nflRoster.Count()}");
+			var tflRoster = sut.GetTflRoster("SF");
+			Assert.IsNotEmpty(tflRoster);
+			WriteLine($"Total TFL Players: {tflRoster.Count}");
+			WriteLine("Players in NFL Roster but not in TFL Roster:");
+			foreach (var player in nflRoster)
+			{
+				var tflPlayer = tflRoster
+					.FirstOrDefault(p => p.FullName == player.FullName);
+				if (tflPlayer == null)
+				{
+					WriteLine(
+						$"{player.FullName,-20} (Not in TFL Roster)");
+				}
+			}
+
 		}
 	}
 
