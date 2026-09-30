@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSTest.Sdk/4.0.2">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net481</TargetFramework>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -9,15 +9,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NflVerseRosterService-Std\NflVerseRosterService-Std.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="NameFixerService-Std">
-      <HintPath>..\..\..\..\Dropbox\Services\NameFixerService-Std.dll</HintPath>
-    </Reference>
-    <Reference Include="PlayerService-2.0">
-      <HintPath>..\..\..\..\Dropbox\Services\PlayerService-2.0.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

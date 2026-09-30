@@ -1,7 +1,8 @@
 ﻿namespace NflVerseRosterService.Tests
 {
 	using NflVerseRosterService_Std;
-	using static System.Console;
+	using System;
+	using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 	[TestClass]
 	public class NflVerseRosterServiceTests
@@ -15,16 +16,16 @@
 		}
 
 		private static NflVerseRosterService ServiceUnderTest() =>
-		
+
 			new("d:/dropbox/CSV/roster_2026.csv");
-		
+
 
 		[TestMethod]
 		public void ServiceChecksCorrectCsvFileName()
 		{
 			var result = sut.LoadRosterData("test.csv");
 			Assert.IsTrue(result.IsFailure);
-			WriteLine($"Error: {result.Error}");
+			Console.WriteLine($"Error: {result.Error}");
 		}
 
 		[TestMethod]
@@ -32,14 +33,14 @@
 		{
 			var result = sut.LoadRosterData("d:/dropbox/CSV/roster_2026.csv");
 			Assert.IsTrue(result.IsSuccess);
-			WriteLine(
+			Console.WriteLine(
 				$"Loaded {result.Value.RosterRecords.Count} roster records.");
-			WriteLine(
+			Console.WriteLine(
 				$"Min Week: {NflVerseRosterHelper.MinWeek(result.Value)}");
-			WriteLine(
+			Console.WriteLine(
 				$"Max Week: {NflVerseRosterHelper.MaxWeek(result.Value)}");
 			NflVerseRosterHelper.DistinctTeams(result.Value)
-				.ForEach(team => WriteLine($"Team: {team}"));
+				.ForEach(team => Console.WriteLine($"Team: {team}"));
 		}
 
 		[TestMethod]
@@ -49,10 +50,10 @@
 			var roster = sut.LatestActiveRosterFor("SF");
 			roster
 				.ForEach(
-					player => WriteLine(
+					player => Console.WriteLine(
 						$"{player.FullName,-20} {player.Position,-2} {player.Status}"));
-			WriteLine();
-			WriteLine( $"Total Active Players: {roster.Count}");
+			Console.WriteLine();
+			Console.WriteLine($"Total Active Players: {roster.Count}");
 		}
 
 		[TestMethod]
@@ -61,19 +62,19 @@
 			var nflRoster = sut.LatestRosterFor("SF");
 			var tflRoster = sut.GetTflRoster("SF");
 			Assert.IsNotEmpty(tflRoster);
-			WriteLine($"Total TFL Players: {tflRoster.Count}");
+			Console.WriteLine($"Total TFL Players: {tflRoster.Count}");
 			foreach (var player in tflRoster)
 			{
 				var nflPlayer = nflRoster
 					.FirstOrDefault(p => p.FullName == player.FullName);
 				if (nflPlayer != null)
 				{
-					WriteLine(
+					Console.WriteLine(
 						$"{player.FullName,-20} {player.Position,-2} {nflPlayer.Status}");
 				}
 				else
 				{
-					WriteLine(
+					Console.WriteLine(
 						$"{player.FullName,-20} (Not in NFL Roster)");
 				}
 			}
@@ -85,10 +86,10 @@
 			var devRoster = sut.DevRosterFor("NO");
 
 			Assert.IsNotEmpty(devRoster);
-			WriteLine($"Total Developmental Players: {devRoster.Count}");
+			Console.WriteLine($"Total Developmental Players: {devRoster.Count}");
 			foreach (var player in devRoster)
 			{
-				WriteLine(
+				Console.WriteLine(
 					$"{player.FullName,-20} {player.Position,-2} {player.Status}");
 			}
 		}
@@ -100,10 +101,10 @@
 			var tflRoster = sut.GetTflRoster(teamInFocus);
 			Assert.IsNotEmpty(tflRoster);
 			var falslyRostered = sut.FalselyRosteredFor(
-				teamInFocus, 
+				teamInFocus,
 				tflRoster);
 			falslyRostered.ForEach(
-				player => WriteLine(
+				player => Console.WriteLine(
 					$"{player.FullName,-20} {player.Position,-2} tm: {sut.PlaysFor(player.FullName)}"));
 		}
 
@@ -113,7 +114,7 @@
 			var playerName = "Deebo Samuel";
 			var expectedTeamCode = "SF";
 			var teamCode = sut.PlaysFor(playerName);
-			WriteLine($"{playerName} plays for {teamCode}");
+			Console.WriteLine($"{playerName} plays for {teamCode}");
 			Assert.AreEqual(expectedTeamCode, teamCode);
 		}
 
@@ -123,7 +124,7 @@
 			var teams = NflVerseRosterHelper.DistinctTeams(
 				sut.NflVerseRosters);
 			Assert.IsNotEmpty(teams);
-			teams.ForEach(team => WriteLine($"Team: {team}"));
+			teams.ForEach(team => Console.WriteLine($"Team: {team}"));
 		}
 
 		[TestMethod]
@@ -132,7 +133,7 @@
 			var positions = NflVerseRosterHelper.DistinctPositions(
 				sut.NflVerseRosters);
 			Assert.IsNotEmpty(positions);
-			positions.ForEach(position => WriteLine($"Position: {position}"));
+			positions.ForEach(position => Console.WriteLine($"Position: {position}"));
 		}
 
 		[TestMethod]
@@ -142,18 +143,18 @@
 			//  they will be in the nflverse data but not in the TFL data.
 			var nflRoster = sut.LatestRosterFor("SF")
 				.Where(p => NflVerseRosterHelper.IsFantasyRelevant(p));
-			WriteLine($"Total NFL Fantasy Players: {nflRoster.Count()}");
+			Console.WriteLine($"Total NFL Fantasy Players: {nflRoster.Count()}");
 			var tflRoster = sut.GetTflRoster("SF");
 			Assert.IsNotEmpty(tflRoster);
-			WriteLine($"Total TFL Players: {tflRoster.Count}");
-			WriteLine("Players in NFL Roster but not in TFL Roster:");
+			Console.WriteLine($"Total TFL Players: {tflRoster.Count}");
+			Console.WriteLine("Players in NFL Roster but not in TFL Roster:");
 			foreach (var player in nflRoster)
 			{
 				var tflPlayer = tflRoster
 					.FirstOrDefault(p => p.FullName == player.FullName);
 				if (tflPlayer == null)
 				{
-					WriteLine(
+					Console.WriteLine(
 						$"{player.FullName,-20} (Not in TFL Roster)");
 				}
 			}
