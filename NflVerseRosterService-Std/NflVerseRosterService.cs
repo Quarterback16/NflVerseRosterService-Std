@@ -67,17 +67,6 @@ namespace NflVerseRosterService_Std
 			LoadRosterData();
 		}
 
-		public NflVerseRosterService(
-			string csvFilePath)
-		{
-			_ps = new NflPlayerService(
-				FolderHelper.PlayerCsvFile(
-					Season.ToString()));
-			_nameFixer = new NameFixer();
-			CsvFilePath = csvFilePath;
-			LoadRosterData();
-		}
-
 		private void LoadRosterData()
 		{
 			var result = LoadRosterData(CsvFilePath);
