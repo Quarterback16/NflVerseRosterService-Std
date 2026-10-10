@@ -70,7 +70,9 @@ namespace NflVerseRosterService_Std
 		public NflVerseRosterService(
 			string csvFilePath)
 		{
-			_ps = new NflPlayerService();
+			_ps = new NflPlayerService(
+				FolderHelper.PlayerCsvFile(
+					Season.ToString()));
 			_nameFixer = new NameFixer();
 			CsvFilePath = csvFilePath;
 			LoadRosterData();
