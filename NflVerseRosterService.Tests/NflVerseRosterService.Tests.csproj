@@ -11,4 +11,10 @@
     <ProjectReference Include="..\NflVerseRosterService-Std\NflVerseRosterService-Std.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Helpers-Std">
+      <HintPath>..\..\..\..\Users\quart\Dropbox\Services\Helpers-Std.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

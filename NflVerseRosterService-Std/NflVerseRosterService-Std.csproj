@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)NflVerseRosterService-Std.dll&quot; &quot;d:\dropbox\services\&quot; /D /Y /I" />
+    <Exec Command="xcopy &quot;$(TargetDir)NflVerseRosterService-Std.dll&quot; &quot;c:\users\quart\dropbox\services\&quot; /D /Y /I" />
   </Target>
 
   <ItemGroup>
@@ -16,11 +16,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="Helpers-Std">
+      <HintPath>..\..\..\..\Users\quart\Dropbox\Services\Helpers-Std.dll</HintPath>
+    </Reference>
     <Reference Include="NameFixerService-Std">
-      <HintPath>..\..\..\..\Dropbox\Services\NameFixerService-Std.dll</HintPath>
+      <HintPath>..\..\..\..\Users\quart\Dropbox\Services\NameFixerService-Std.dll</HintPath>
     </Reference>
     <Reference Include="PlayerService-2.0">
-      <HintPath>..\..\..\..\Dropbox\Services\PlayerService-2.0.dll</HintPath>
+      <HintPath>..\..\..\..\Users\quart\Dropbox\Services\PlayerService-2.0.dll</HintPath>
     </Reference>
   </ItemGroup>
 

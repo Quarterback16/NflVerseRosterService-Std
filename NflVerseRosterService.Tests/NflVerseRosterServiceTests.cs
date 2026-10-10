@@ -3,6 +3,7 @@
 	using NflVerseRosterService_Std;
 	using System;
 	using Microsoft.VisualStudio.TestTools.UnitTesting;
+	using Helpers_Std;
 
 	[TestClass]
 	public class NflVerseRosterServiceTests
@@ -17,8 +18,14 @@
 
 		private static NflVerseRosterService ServiceUnderTest() =>
 
-			new("d:/dropbox/CSV/roster_2026.csv");
+			new(2026);
 
+		[TestMethod]
+		public void ServiceKnowsWhereTheCsvDataIs()
+		{
+			Assert.IsGreaterThan(0, sut.CsvFilePath.Length);
+			Console.WriteLine(sut.CsvFilePath);
+		}
 
 		[TestMethod]
 		public void ServiceChecksCorrectCsvFileName()
@@ -31,7 +38,8 @@
 		[TestMethod]
 		public void ServiceLoadsDataWhenCorrectCsvFileNameGiven()
 		{
-			var result = sut.LoadRosterData("d:/dropbox/CSV/roster_2026.csv");
+			var result = sut.LoadRosterData(
+				$"{FolderHelper.CsvFolder()}roster_{sut.Season}.csv");
 			Assert.IsTrue(result.IsSuccess);
 			Console.WriteLine(
 				$"Loaded {result.Value.RosterRecords.Count} roster records.");

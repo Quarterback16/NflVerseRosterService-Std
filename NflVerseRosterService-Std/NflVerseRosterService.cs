@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using CsvHelper;
 using CsvHelper.Configuration;
+using Helpers_Std;
 using NameFixerService;
 using PlayerService_2._0;
 using System.Collections.Generic;
@@ -52,12 +53,17 @@ namespace NflVerseRosterService_Std
 
 		public NflVerseRosterState NflVerseRosters { get; set; }
 		public string CsvFilePath { get; set; }
+		public int Season { get; set; }
 
-		public NflVerseRosterService()
+		public NflVerseRosterService(
+			int season)
 		{
-			_ps = new NflPlayerService();
+			Season = season;
+			_ps = new NflPlayerService(
+				FolderHelper.PlayerCsvFile(
+					season.ToString()));
 			_nameFixer = new NameFixer();
-			CsvFilePath = "d:/dropbox/CSV/roster_2026.csv";
+			CsvFilePath = $"{FolderHelper.CsvFolder()}roster_{season}.csv";
 			LoadRosterData();
 		}
 
@@ -80,13 +86,13 @@ namespace NflVerseRosterService_Std
 			}
 		}
 
-		public Result<NflVerseRosterState> LoadRosterData(
+		public CSharpFunctionalExtensions.Result<NflVerseRosterState> LoadRosterData(
 			string csvFile)
 		{
 			// Implement the logic to load roster data here
 			if (!File.Exists(csvFile))
 			{
-				return Result.Failure<NflVerseRosterState>(
+				return CSharpFunctionalExtensions.Result.Failure<NflVerseRosterState>(
 					$"CSV file not found: {csvFile}");
 			}
 			var rosterRecords = ReadCsv(csvFile);
@@ -94,7 +100,7 @@ namespace NflVerseRosterService_Std
 			{
 				RosterRecords = rosterRecords
 			};
-			return Result.Success(rosterState); // Placeholder return value
+			return CSharpFunctionalExtensions.Result.Success(rosterState); // Placeholder return value
 		}
 
 		private List<PlayerRosterState> ReadCsv(
